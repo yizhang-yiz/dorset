@@ -6,3 +6,5 @@ pub mod vari;
 
 pub mod var;
 pub mod chainable;
+
+pub mod memory;

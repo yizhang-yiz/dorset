@@ -1,14 +1,11 @@
+extern crate float_cmp;
+
 #[macro_use]
 pub mod macros;
 
+#[macro_use]
 mod core;
+
+#[macro_use]
 mod operations;
 
-
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
-}
