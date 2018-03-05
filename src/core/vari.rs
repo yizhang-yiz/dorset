@@ -1,36 +1,71 @@
 use core::types::*;
 use core::constants::*;
+use core::memory::*;
 use std::fmt::Debug;
+use std::rc::Rc;
+use std::cell::RefCell;
+use std::default::Default;
+use std::convert::From;
 
-pub trait Vari: Debug {
-    fn data(&self) -> &VariData;
-    fn data_mut(&mut self) -> &mut VariData;
-    fn val(&self) -> Real {
-        self.data().val_.clone()
-    }
-    fn set_val(&mut self, v: Real) {
-        self.data_mut().val_ = v;
-    }
-    fn adj(&self) -> Real {
-        self.data().adj_.clone()
-    }
-    fn set_adj(&mut self, v: Real) {
-        self.data_mut().adj_ = v;
-    }
-    fn init_dependent(&mut self) {
-        self.set_adj(ONE);
-    }
-    fn set_zero_adjoint(&mut self) {
-        self.set_adj(ZERO);        
-    }
-    fn chain(&mut self) {}
+pub enum Operand {
+    Vari(Rc<*mut Vari>),
+    Data(Real),
+    None,
 }
 
-// impl fmt::Debug for Var {
-//     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-//         write!(f, "Var {{ val: {}, adj: {} }}", self.val(), self.adj())
-//     }
-// }
+pub struct Vari {
+    data: VariData,
+    pub a: Operand,
+    pub b: Operand,
+    chain_op: Box<Fn(&Vari)>,
+    mem_: Rc<RefCell<ChainStack>>,
+}
+
+impl Vari {
+    pub fn new(v: Real, oa: Operand, ob: Operand, op: Box<Fn(&Vari)>, mem: Rc<RefCell<ChainStack>>) -> Vari {
+        Vari {
+            data: VariData::new(v),
+            a: oa,
+            b: ob,
+            chain_op: op,
+            mem_: mem,
+        }
+    }
+    pub fn val(&self) -> Real {
+        self.data.val_
+    }
+    pub fn adj(&self) -> Real {
+        self.data.adj_
+    }
+    pub fn set_adj(&mut self, v: Real) {
+        self.data.adj_ = v;
+    }
+    pub fn init_dependent(&mut self) {
+        self.set_adj(ONE);
+    }
+    pub fn set_zero_adjoint(&mut self) {
+        self.set_adj(ZERO);
+    }
+    pub fn chain(&self) {
+        (self.chain_op)(self);
+    }
+    pub fn mem(&self) -> Rc<RefCell<ChainStack>> {
+        self.mem_.clone()
+    }
+}
+
+impl<'a> From<Rc<*mut Vari>> for &'a mut Vari {
+    fn from(a: Rc<*mut Vari>) -> &'a mut Vari {
+        unsafe { &mut (**Rc::into_raw(a)) }
+    }
+}
+impl<'a> From<Rc<*mut Vari>> for &'a Vari {
+    fn from(a: Rc<*mut Vari>) -> &'a Vari {
+        unsafe { &(**Rc::into_raw(a)) }
+    }
+}
+
+pub fn do_nothing(v: &Vari) {}
 
 #[derive(Debug, Clone)]
 pub struct VariData{
@@ -47,27 +82,9 @@ impl VariData {
     }
 }
 
-impl Vari for VariData {
-    fn data(&self) -> &VariData {
-        self
-    }
-    fn data_mut(&mut self) -> &mut VariData {
-        self
-    }
-}
-
 impl From<Real> for VariData {
     fn from(v: Real) -> VariData {
         VariData::new(v)
     }
 }
 
-
-// impl Chainable for VariData {
-//     fn init_dependent(&mut self) {
-//         self.set_adj(ONE);
-//     }
-//     fn set_zero_adjoint(&mut self) {
-//         self.set_adj(ZERO);        
-//     }
-// }

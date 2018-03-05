@@ -3,7 +3,7 @@ macro_rules! vari_type {
     ( $varitype:ident ) => {
         // {
         #[derive(Debug)]
-        struct $varitype {
+        pub struct $varitype {
             data: VariData,
             avi_: Rc<RefCell<Vari>>,
         }

@@ -1,3 +1,5 @@
+extern crate typed_arena;
+
 extern crate float_cmp;
 
 #[macro_use]

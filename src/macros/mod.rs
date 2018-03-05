@@ -4,6 +4,7 @@
 #[macro_use] mod var_uniop;
 #[macro_use] mod ref_binop;
 #[macro_use] mod var_binop;
+#[macro_use] mod var;
 
 // #[macro_use]
 // mod another_macro;
