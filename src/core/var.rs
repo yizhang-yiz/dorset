@@ -3,16 +3,14 @@ use core::types::*;
 use core::vari::*;
 use core::memory::*;
 use std::convert::From;
-use std::cell::RefCell;
-use std::rc::Rc;
 use operations;
 
 pub struct Var {
-    pub vi_: Rc<*mut Vari>,
+    pub vi_: *mut Vari,
 }
 
 impl Var {
-    pub fn new(vi: Rc<*mut Vari>) -> Var {
+    pub fn new(vi: *mut Vari) -> Var {
         Var { vi_: vi }
     }
     pub fn val(&self) -> Real {
@@ -34,26 +32,3 @@ impl fmt::Debug for Var {
     }
 }
 
-// #[cfg(test)]
-// mod tests {
-//     use super::*;
-//     #[test]
-//     fn new() {
-//         let stack = Rc::new(RefCell::new(VarStack::new()));
-//         let v1 = Var::from((3.0, stack.clone()));
-//         let v2 = Var::from((4.0, stack.clone()));
-//         assert_eq!(v1.val(), 3.0);
-//         assert_eq!(v1.adj(), 0.0);
-//         assert_eq!(v2.val(), 4.0);
-//         assert_eq!(v2.adj(), 0.0);
-//     }
-
-//     #[test]
-//     fn grad() {
-//         let stack = Rc::new(RefCell::new(VarStack::new()));
-//         let v1 = Var::from((3.0, stack.clone()));
-//         v1.grad();
-//         // grad(&v1);
-//         assert_eq!(v1.adj(), 1.0);
-//     }
-// }

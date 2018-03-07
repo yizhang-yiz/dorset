@@ -8,7 +8,7 @@ use std::default::Default;
 use std::convert::From;
 
 pub enum Operand {
-    Vari(Rc<*mut Vari>),
+    Vari(*mut Vari),
     Data(Real),
     None,
 }
@@ -54,14 +54,14 @@ impl Vari {
     }
 }
 
-impl<'a> From<Rc<*mut Vari>> for &'a mut Vari {
-    fn from(a: Rc<*mut Vari>) -> &'a mut Vari {
-        unsafe { &mut (**Rc::into_raw(a)) }
+impl<'a> From<*mut Vari> for &'a mut Vari {
+    fn from(a: *mut Vari) -> &'a mut Vari {
+        unsafe { &mut (*a) }
     }
 }
-impl<'a> From<Rc<*mut Vari>> for &'a Vari {
-    fn from(a: Rc<*mut Vari>) -> &'a Vari {
-        unsafe { &(**Rc::into_raw(a)) }
+impl<'a> From<*mut Vari> for &'a Vari {
+    fn from(a: *mut Vari) -> &'a Vari {
+        unsafe { &(*a) }
     }
 }
 
