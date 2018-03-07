@@ -6,31 +6,43 @@ use std::rc::Rc;
 
 fn chain_ln(vi: &Vari) {
     let adj = vi.adj();
-    if let Operand::Vari(ref rcavi) = vi.a {
-        let avi: &mut Vari = rcavi.clone().into();
+    if let Operand::Vari(ref a) = vi.a {
+        let avi: &mut Vari = a.clone().into();
         let avi_val = avi.val();
         let avi_adj = avi.adj();
         avi.set_adj(avi_adj + adj/avi_val);
     }
 }
 
-pub fn ln(v: &Var) -> Var {
-    let vi: &mut Vari = v.vi_.clone().into();
-    let mem = vi.mem();
-    let operand = Operand::Vari(v.vi_.clone());
-    let new_vi = mem.borrow_mut().alloc(Vari::new(
-        v.val().ln(),
-        operand,
-        Operand::None,
-        Box::new(chain_ln),
-        mem.clone()
-    ));
-    Var::new(new_vi)
+pub trait Opln {
+    fn ln(&self) -> Self;
 }
 
-// pub fn ln(v: &Var) -> Var{
-//     v.ln()
-// }
+impl Opln for Real {
+    fn ln(&self) -> Real {
+        self.clone().ln()
+    }
+}
+
+impl Opln for Var {
+    fn ln(&self) -> Var {
+        let vi = self.get_vari_refmut();
+        let mem = vi.mem();
+        let operand = Operand::Vari(self.vi_.clone());
+        let new_vi_ptr = mem.borrow_mut().alloc(Vari::new(
+            self.val().ln(),
+            operand,
+            Operand::None,
+            Box::new(chain_ln),
+            mem.clone()
+        ));
+        Var::new(new_vi_ptr)
+    }
+}
+
+pub fn ln<T: Opln>(v: &T) -> T {
+    Opln::ln(v)
+}
 
 #[cfg(test)]
 mod test {
@@ -39,7 +51,7 @@ mod test {
     use float_cmp::*;
 
     #[test]
-    fn test_vari0() {
+    fn test() {
         use std::mem::size_of;
         use std::cell::RefMut;
         use std::ops::Deref;

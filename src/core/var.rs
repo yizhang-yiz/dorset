@@ -3,26 +3,33 @@ use core::types::*;
 use core::vari::*;
 use core::memory::*;
 use std::convert::From;
+use std::rc::Rc;
 use operations;
 
 pub struct Var {
-    pub vi_: *mut Vari,
+    pub vi_: Rc<*mut Vari>,
 }
 
 impl Var {
-    pub fn new(vi: *mut Vari) -> Var {
+    pub fn new(vi: Rc<*mut Vari>) -> Var {
         Var { vi_: vi }
     }
     pub fn val(&self) -> Real {
-        let v: &Vari = self.vi_.clone().into();
-        v.val()
+        let vi: &Vari = self.vi_.clone().into();
+        vi.val()
     }
     pub fn adj(&self) -> Real {
-        let v: &Vari = self.vi_.clone().into();
-        v.adj()
+        let vi: &Vari = self.vi_.clone().into();
+        vi.adj()
     }
     pub fn grad(&self) {
         operations::grad::grad(self.vi_.clone());
+    }
+    pub fn get_vari_refmut<'a>(&self) -> &'a mut Vari{
+        self.vi_.clone().into()
+    }
+    pub fn get_vari_ref<'a>(&self) -> &'a Vari{
+        self.vi_.clone().into()
     }
 }
 

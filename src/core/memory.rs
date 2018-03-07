@@ -1,9 +1,10 @@
 use typed_arena;
 use core::vari::*;
+use std::rc::Rc;
 
 pub struct ChainStack{
     pub arena: typed_arena::Arena<Vari>,
-    pub stack: Vec<*mut Vari>
+    pub stack: Vec<Rc<*mut Vari>>
 }
 impl ChainStack {
     pub fn new() -> ChainStack {
@@ -12,8 +13,8 @@ impl ChainStack {
             stack: vec![]
         }
     }
-    pub fn alloc(&mut self, vi: Vari) -> *mut Vari {
-        let v: *mut Vari = self.arena.alloc(vi);
+    pub fn alloc(&mut self, vi: Vari) -> Rc<*mut Vari> {
+        let v: Rc<*mut Vari> = Rc::new(self.arena.alloc(vi));
         self.stack.push(v.clone());
         v
     }
