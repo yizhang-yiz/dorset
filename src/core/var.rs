@@ -31,6 +31,10 @@ impl Var {
     pub fn get_vari_ref<'a>(&self) -> &'a Vari{
         self.vi_.clone().into()
     }
+    pub fn set_zero_all_adjoints(&self) {
+        let mem = self.get_vari_ref().mem();
+        mem.borrow().set_zero_all_adjoints();
+    }
 }
 
 impl fmt::Debug for Var {

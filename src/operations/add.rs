@@ -5,38 +5,88 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use std::ops::Add;
 
-ref_binop!(impl Vari for AddRefVarDataVari,
-           impl Add, add for Var, Real,
-           with val = |val, b| val + b,
-           derivative = |adj, _avi_adj, _avi_val, _b| adj);
+fn chain_add(vi: &Vari) {
+    let adj = vi.adj();
+    match (vi.a.clone(), vi.b.clone()) {
+        (Operand::Vari(ptr), Operand::Data(bd)) => {
+            let avi: &mut Vari = ptr.clone().into();
+            let avi_val = avi.val();
+            let avi_adj = avi.adj();
+            avi.set_adj(avi_adj + adj);
+        }
+        (Operand::Data(ad), Operand::Vari(ptr)) => {
+            let bvi: &mut Vari = ptr.clone().into();
+            let bvi_val = bvi.val();
+            let bvi_adj = bvi.adj();
+            bvi.set_adj(bvi_adj + adj);
+        }
+        (Operand::Vari(ap), Operand::Vari(bp)) => {
+            let avi: &mut Vari = ap.clone().into();
+            let avi_val = avi.val();
+            let avi_adj = avi.adj();
+            avi.set_adj(avi_adj + adj);
+            let bvi: &mut Vari = bp.clone().into();
+            let bvi_val = bvi.val();
+            let bvi_adj = bvi.adj();
+            bvi.set_adj(bvi_adj + adj);
+        }
+        _ => {}
+    }
+}
 
-ref_binop!(impl Vari for AddRefDataVarVari,
-           impl Add, add for Real, Var,
-           with val = |val, b| val + b,
-           derivative = |adj, _avi_adj, _avi_val, _b| adj);
+impl<'a> Add<&'a Var> for &'a Var {
+    type Output = Var;
+    fn add(self, other: &'a Var) -> Var {
+        let vi = self.get_vari_refmut();
+        let mem = vi.mem();
+        let opa = Operand::Vari(self.vi_.clone());
+        let opb = Operand::Vari(other.vi_.clone());
+        let new_vi_ptr = mem.borrow_mut().alloc(Vari::new(
+            self.val() + other.val(),
+            opa,
+            opb,
+            Box::new(chain_add),
+            mem.clone()
+        ));
+        Var::new(new_vi_ptr)
+    }
+}
 
-ref_binop!(impl Vari for AddRefVarVarVari,
-           impl Add, add for Var, Var,
-           with val = |a, b| a + b,
-           derivative a = |adj, _avi_adj, _avi_val, _bvi_adj, _bvi_val| adj,
-           derivative b = |adj, _avi_adj, _avi_val, _bvi_adj, _bvi_val| adj);
+impl<'a> Add<&'a Real> for &'a Var {
+    type Output = Var;
+    fn add(self, other: &'a Real) -> Var {
+        let vi = self.get_vari_refmut();
+        let mem = vi.mem();
+        let opa = Operand::Vari(self.vi_.clone());
+        let opb = Operand::Data(other.clone());
+        let new_vi_ptr = mem.borrow_mut().alloc(Vari::new(
+            self.val() + other,
+            opa,
+            opb,
+            Box::new(chain_add),
+            mem.clone()
+        ));
+        Var::new(new_vi_ptr)
+    }
+}
 
-var_binop!(impl Vari for AddVarDataVari,
-           impl Add, add for Var, Real,
-           with val = |val, b| val + b,
-           derivative = |adj, _avi_adj, _avi_val, _b| adj);
-
-var_binop!(impl Vari for AddDataVarVari,
-           impl Add, add for Real, Var,
-           with val = |val, b| val + b,
-           derivative = |adj, _avi_adj, _avi_val, _b| adj);
-
-var_binop!(impl Vari for AddVarVarVari,
-           impl Add, add for Var, Var,
-           with val = |a, b| a + b,
-           derivative a = |adj, _avi_adj, _avi_val, _bvi_adj, _bvi_val| adj,
-           derivative b = |adj, _avi_adj, _avi_val, _bvi_adj, _bvi_val| adj);
-
+impl<'a> Add<&'a Var> for &'a Real {
+    type Output = Var;
+    fn add(self, other: &'a Var) -> Var {
+        let vi = other.get_vari_refmut();
+        let mem = vi.mem();
+        let opa = Operand::Vari(other.vi_.clone());
+        let opb = Operand::Data(self.clone());
+        let new_vi_ptr = mem.borrow_mut().alloc(Vari::new(
+            other.val() + self,
+            opa,
+            opb,
+            Box::new(chain_add),
+            mem.clone()
+        ));
+        Var::new(new_vi_ptr)
+    }
+}
 
 #[cfg(test)]
 mod add_test {
@@ -44,44 +94,32 @@ mod add_test {
     use core::memory::*;
 
     #[test]
-    fn add_d() {
-        let x: Real = 3.6;
-        let d: Real = 3.0;        
-        let stack = Rc::new(RefCell::new(VarStack::new()));
-        let v = Var::from((d.clone(), stack.clone()));
-        let res = &v + x;
-        assert_eq!(v.val(), d);
-        assert_eq!(v.adj(), 0.0);
-        res.grad();
-        assert_eq!(v.adj(), 1.0);
-    }
+    fn add() {
+        let mut x: Real = 3.6;
+        let mut y: Real = 3.0;        
+        let stack = Rc::new(RefCell::new(ChainStack::new()));
+        let vx = var!(stack, x);
+        let vy = var!(stack, y);
+        let mut v = &vx + &vy;
+        v.grad();
+        assert_eq!(v.val(), x + y);
+        assert_eq!(vx.adj(), 1.0);
+        assert_eq!(vy.adj(), 1.0);
 
-    #[test]
-    fn d_add() {
-        let x: Real = 3.6;
-        let d: Real = 3.0;        
-        let stack = Rc::new(RefCell::new(VarStack::new()));
-        let v = Var::from((d.clone(), stack.clone()));
-        let res = x + &v;
-        assert_eq!(v.val(), d);
-        assert_eq!(v.adj(), 0.0);
-        res.grad();
-        assert_eq!(v.adj(), 1.0);
-    }
+        v.set_zero_all_adjoints();
+        y = 8.9;
+        v = &vx + &y;
+        v.grad();
+        assert_eq!(v.val(), x + y);
+        assert_eq!(vx.adj(), 1.0);
+        assert_eq!(vy.adj(), 0.0);
 
-    #[test]
-    fn v_add_v() {
-        let x: Real = 3.6;
-        let y: Real = 3.0;
-        let stack = Rc::new(RefCell::new(VarStack::new()));
-        let v1 = Var::from((x, stack.clone()));
-        let v2 = Var::from((y, stack.clone()));
-        let res = &v1 + &v2;
-        assert_eq!(res.val(), x + y);
-        assert_eq!(res.adj(), 0.0);
-        res.grad();
-        assert_eq!(v1.adj(), 1.0);
-        assert_eq!(v2.adj(), 1.0);
+        v.set_zero_all_adjoints();
+        x = 83.1;
+        v = &x + &vy;
+        v.grad();
+        assert_eq!(v.val(), x + vy.val());
+        assert_eq!(vx.adj(), 0.0);
+        assert_eq!(vy.adj(), 1.0);
     }
-
 }

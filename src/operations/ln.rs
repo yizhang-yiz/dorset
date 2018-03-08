@@ -14,17 +14,17 @@ fn chain_ln(vi: &Vari) {
     }
 }
 
-pub trait Opln {
+pub trait OpLn {
     fn ln(&self) -> Self;
 }
 
-impl Opln for Real {
+impl OpLn for Real {
     fn ln(&self) -> Real {
         self.clone().ln()
     }
 }
 
-impl Opln for Var {
+impl OpLn for Var {
     fn ln(&self) -> Var {
         let vi = self.get_vari_refmut();
         let mem = vi.mem();
@@ -40,8 +40,8 @@ impl Opln for Var {
     }
 }
 
-pub fn ln<T: Opln>(v: &T) -> T {
-    Opln::ln(v)
+pub fn ln<T: OpLn>(v: &T) -> T {
+    OpLn::ln(v)
 }
 
 #[cfg(test)]

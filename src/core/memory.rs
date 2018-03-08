@@ -24,4 +24,10 @@ impl ChainStack {
             vi.chain();
         }
     }
+    pub fn set_zero_all_adjoints(&self) {
+        for it in self.stack.iter() {
+            let vi: &mut Vari = it.clone().into();
+            vi.set_zero_adjoint();
+        }
+    }
 }

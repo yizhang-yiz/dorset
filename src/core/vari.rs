@@ -7,6 +7,7 @@ use std::cell::RefCell;
 use std::default::Default;
 use std::convert::From;
 
+#[derive(Clone)]
 pub enum Operand {
     Vari(Rc<*mut Vari>),
     Data(Real),
