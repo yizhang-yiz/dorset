@@ -5,7 +5,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use std::ops::Sub;
 
-fn chain_subtract(vi: &Vari) {
+fn chain_subtraction(vi: &Vari) {
     let adj = vi.adj();
     match (vi.a.clone(), vi.b.clone()) {
         (Operand::Vari(ptr), Operand::Data(bd)) => {
@@ -38,7 +38,7 @@ binop!(impl Sub, sub
        for Var, Real, |x, y| x - y,
        for Real, Var, |x, y| x - y,
        for Var, Var, |x, y| x - y,
-       chain Fn = chain_subtract);
+       chain Fn = chain_subtraction);
 
 #[cfg(test)]
 mod test {
