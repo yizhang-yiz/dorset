@@ -7,3 +7,4 @@ pub mod grad;
 #[macro_use] pub mod add;
 #[macro_use] pub mod sub;
 #[macro_use] pub mod mul;
+#[macro_use] pub mod div;
