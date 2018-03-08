@@ -34,62 +34,14 @@ fn chain_add(vi: &Vari) {
     }
 }
 
-impl<'a> Add<&'a Var> for &'a Var {
-    type Output = Var;
-    fn add(self, other: &'a Var) -> Var {
-        let vi = self.get_vari_refmut();
-        let mem = vi.mem();
-        let opa = Operand::Vari(self.vi_.clone());
-        let opb = Operand::Vari(other.vi_.clone());
-        let new_vi_ptr = mem.borrow_mut().alloc(Vari::new(
-            self.val() + other.val(),
-            opa,
-            opb,
-            Box::new(chain_add),
-            mem.clone()
-        ));
-        Var::new(new_vi_ptr)
-    }
-}
-
-impl<'a> Add<&'a Real> for &'a Var {
-    type Output = Var;
-    fn add(self, other: &'a Real) -> Var {
-        let vi = self.get_vari_refmut();
-        let mem = vi.mem();
-        let opa = Operand::Vari(self.vi_.clone());
-        let opb = Operand::Data(other.clone());
-        let new_vi_ptr = mem.borrow_mut().alloc(Vari::new(
-            self.val() + other,
-            opa,
-            opb,
-            Box::new(chain_add),
-            mem.clone()
-        ));
-        Var::new(new_vi_ptr)
-    }
-}
-
-impl<'a> Add<&'a Var> for &'a Real {
-    type Output = Var;
-    fn add(self, other: &'a Var) -> Var {
-        let vi = other.get_vari_refmut();
-        let mem = vi.mem();
-        let opa = Operand::Vari(other.vi_.clone());
-        let opb = Operand::Data(self.clone());
-        let new_vi_ptr = mem.borrow_mut().alloc(Vari::new(
-            other.val() + self,
-            opa,
-            opb,
-            Box::new(chain_add),
-            mem.clone()
-        ));
-        Var::new(new_vi_ptr)
-    }
-}
+binop!(impl Add, add
+       for Var, Real, |x, y| x + y,
+       for Real, Var, |x, y| x + y,
+       for Var, Var, |x, y| x + y,
+       chain Fn = chain_add);
 
 #[cfg(test)]
-mod add_test {
+mod test {
     use super::*;
     use core::memory::*;
 

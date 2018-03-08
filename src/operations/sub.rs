@@ -5,61 +5,73 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use std::ops::Sub;
 
-ref_binop!(impl Vari for SubRefVarDataVari,
-           impl Sub, sub for Var, Real,
-           with val = |val: Real, b: Real| val - b,
-           derivative = |adj, _avi_adj, _avi_val, _b| adj);
+fn chain_subtract(vi: &Vari) {
+    let adj = vi.adj();
+    match (vi.a.clone(), vi.b.clone()) {
+        (Operand::Vari(ptr), Operand::Data(bd)) => {
+            let avi: &mut Vari = ptr.clone().into();
+            let avi_val = avi.val();
+            let avi_adj = avi.adj();
+            avi.set_adj(avi_adj + adj);
+        }
+        (Operand::Data(ad), Operand::Vari(ptr)) => {
+            let bvi: &mut Vari = ptr.clone().into();
+            let bvi_val = bvi.val();
+            let bvi_adj = bvi.adj();
+            bvi.set_adj(bvi_adj - adj);
+        }
+        (Operand::Vari(ap), Operand::Vari(bp)) => {
+            let avi: &mut Vari = ap.clone().into();
+            let avi_val = avi.val();
+            let avi_adj = avi.adj();
+            avi.set_adj(avi_adj + adj);
+            let bvi: &mut Vari = bp.clone().into();
+            let bvi_val = bvi.val();
+            let bvi_adj = bvi.adj();
+            bvi.set_adj(bvi_adj - adj);
+        }
+        _ => {}
+    }
+}
 
-ref_binop!(impl Vari for SubRefDataVarVari,
-           impl Sub, sub for Real, Var,
-           with val = |val: Real, b: Real| b - val,
-           derivative = |adj: Real, _avi_adj, _avi_val, _b| -adj);
-
-ref_binop!(impl Vari for SubRefVarVarVari,
-           impl Sub, sub for Var, Var,
-           with val = |a: Real, b: Real| a - b,
-           derivative a = |adj: Real, _avi_adj, _avi_val, _bvi_adj, _bvi_val| adj,
-           derivative b = |adj: Real, _avi_adj, _avi_val, _bvi_adj, _bvi_val| -adj);
-
-var_binop!(impl Vari for SubVarDataVari,
-           impl Sub, sub for Var, Real,
-           with val = |val: Real, b: Real| val - b,
-           derivative = |adj, _avi_adj, _avi_val, _b| adj);
-
-var_binop!(impl Vari for SubDataVarVari,
-           impl Sub, sub for Real, Var,
-           with val = |val: Real, b: Real| b - val,
-           derivative = |adj: Real, _avi_adj, _avi_val, _b| -adj);
-
-var_binop!(impl Vari for SubVarVarVari,
-           impl Sub, sub for Var, Var,
-           with val = |a: Real, b: Real| a - b,
-           derivative a = |adj: Real, _avi_adj, _avi_val, _bvi_adj, _bvi_val| adj,
-           derivative b = |adj: Real, _avi_adj, _avi_val, _bvi_adj, _bvi_val| -adj);
-
+binop!(impl Sub, sub
+       for Var, Real, |x, y| x - y,
+       for Real, Var, |x, y| x - y,
+       for Var, Var, |x, y| x - y,
+       chain Fn = chain_subtract);
 
 #[cfg(test)]
-mod sub_test {
+mod test {
     use super::*;
     use core::memory::*;
 
     #[test]
-    fn v_sub_v() {
-        use core::constants::*;
-        let x: Real = 3.6;
-        let y: Real = 3.0;
-        let z: Real = 8.0;
-        let stack = Rc::new(RefCell::new(VarStack::new()));
-        let vx = Var::from((x, stack.clone()));
-        let vy = Var::from((y, stack.clone()));
-        let vz = Var::from((z, stack.clone()));
-        let v = &vx + &vy;
-        let res = &vz - &v;
-        res.grad();
-        assert_eq!(v.adj(), -ONE);
-        assert_eq!(vz.adj(), ONE);
-        assert_eq!(vx.adj(), -ONE);
-        assert_eq!(vy.adj(), -ONE);
-    }
+    fn sub() {
+        let mut x: Real = 3.6;
+        let mut y: Real = 3.0;        
+        let stack = Rc::new(RefCell::new(ChainStack::new()));
+        let vx = var!(stack, x);
+        let vy = var!(stack, y);
+        let mut v = &vx - &vy;
+        v.grad();
+        assert_eq!(v.val(), x - y);
+        assert_eq!(vx.adj(), 1.0);
+        assert_eq!(vy.adj(), -1.0);
 
+        v.set_zero_all_adjoints();
+        y = 8.9;
+        v = &vx - &y;
+        v.grad();
+        assert_eq!(v.val(), x - y);
+        assert_eq!(vx.adj(), 1.0);
+        assert_eq!(vy.adj(), 0.0);
+
+        v.set_zero_all_adjoints();
+        x = 83.1;
+        v = &x - &vy;
+        v.grad();
+        assert_eq!(v.val(), x - vy.val());
+        assert_eq!(vx.adj(), 0.0);
+        assert_eq!(vy.adj(), -1.0);
+    }
 }
