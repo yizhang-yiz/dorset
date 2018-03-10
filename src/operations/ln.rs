@@ -7,7 +7,7 @@ fn chain_ln(vi: &Vari) {
         let avi: &mut Vari = a.clone().into();
         let avi_val = avi.val();
         let avi_adj = avi.adj();
-        avi.set_adj(avi_adj + adj/avi_val);
+        avi.set_adj(avi_adj + adj / avi_val);
     }
 }
 
@@ -29,7 +29,7 @@ mod test {
         let c = ln(&ln(&b));
         c.grad();
         let d: Real = b.val();
-        let dloglogx = 1.0/(d.clone().ln() * d);
-        assert!(b.adj().approx_eq_ulps(&dloglogx,2));
+        let dloglogx = 1.0 / (d.clone().ln() * d);
+        assert!(b.adj().approx_eq_ulps(&dloglogx, 2));
     }
 }

@@ -1,5 +1,5 @@
 macro_rules! uniop {
-    ( impl $trait:ident, $method:ident for Var, $dmethod:ident for Real, 
+    ( impl $trait:ident, $method:ident for Var, $dmethod:ident for Real,
       chain Fn = $chain_fn:expr ) => {
         // {
 
@@ -28,7 +28,7 @@ macro_rules! uniop {
                 Var::new(new_vi_ptr)
             }
         }
-        
+
         pub fn $method<T: $trait>(v: &T) -> T {
             $trait::$method(v)
         }

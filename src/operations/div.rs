@@ -44,7 +44,7 @@ mod test {
     #[test]
     fn mul() {
         let mut x: Real = 3.6;
-        let mut y: Real = 3.0;        
+        let mut y: Real = 3.0;
         let stack = Rc::new(RefCell::new(ChainStack::new()));
         let vx = var!(stack, x);
         let vy = var!(stack, y);
@@ -52,7 +52,7 @@ mod test {
         v.grad();
         assert_eq!(v.val(), x / y);
         assert_eq!(vx.adj(), 1.0 / y);
-        assert_eq!(vy.adj(), -x/(y*y));
+        assert_eq!(vy.adj(), -x / (y * y));
 
         v.set_zero_all_adjoints();
         y = 8.9;
@@ -68,6 +68,6 @@ mod test {
         v.grad();
         assert_eq!(v.val(), x / vy.val());
         assert_eq!(vx.adj(), 0.0);
-        assert_eq!(vy.adj(), -x/(vy.val() * vy.val()));
+        assert_eq!(vy.adj(), -x / (vy.val() * vy.val()));
     }
 }

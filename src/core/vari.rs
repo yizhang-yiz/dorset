@@ -25,7 +25,13 @@ pub struct Vari {
 }
 
 impl Vari {
-    pub fn new(v: Real, oa: Operand, ob: Operand, op: Box<Fn(&Vari)>, mem: Rc<RefCell<ChainStack>>) -> Vari {
+    pub fn new(
+        v: Real,
+        oa: Operand,
+        ob: Operand,
+        op: Box<Fn(&Vari)>,
+        mem: Rc<RefCell<ChainStack>>,
+    ) -> Vari {
         Vari {
             data: VariData::new(v),
             a: oa,
@@ -56,7 +62,7 @@ impl Vari {
         self.mem_.clone()
     }
 }
- 
+
 impl<'a> From<Rc<*mut Vari>> for &'a mut Vari {
     fn from(a: Rc<*mut Vari>) -> &'a mut Vari {
         unsafe { &mut (**Rc::into_raw(a)) }
@@ -77,16 +83,16 @@ impl fmt::Debug for Vari {
 pub fn do_nothing(_v: &Vari) {}
 
 #[derive(Debug, Clone)]
-pub struct VariData{
+pub struct VariData {
     pub val_: Real,
     pub adj_: Real,
 }
 
 impl VariData {
     pub fn new(v: Real) -> VariData {
-        VariData{
+        VariData {
             val_: v,
-            adj_: 0.0 as Real
+            adj_: 0.0 as Real,
         }
     }
 }
@@ -96,4 +102,3 @@ impl From<Real> for VariData {
         VariData::new(v)
     }
 }
-

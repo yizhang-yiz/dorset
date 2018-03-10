@@ -1,5 +1,5 @@
 //! Each `Var` contains a reference-counted pointer to a
-//! `Vari`, stored in memory arena. 
+//! `Vari`, stored in memory arena.
 use std::fmt;
 pub use core::types::*;
 pub use core::vari::*;
@@ -25,10 +25,10 @@ impl Var {
     pub fn grad(&self) {
         operations::grad::grad(self.vi_.clone());
     }
-    pub fn get_vari_refmut<'a>(&self) -> &'a mut Vari{
+    pub fn get_vari_refmut<'a>(&self) -> &'a mut Vari {
         self.vi_.clone().into()
     }
-    pub fn get_vari_ref<'a>(&self) -> &'a Vari{
+    pub fn get_vari_ref<'a>(&self) -> &'a Vari {
         self.vi_.clone().into()
     }
     pub fn set_zero_all_adjoints(&self) {
@@ -42,4 +42,3 @@ impl fmt::Debug for Var {
         write!(f, "Var {{ val: {}, adj: {} }}", self.val(), self.adj())
     }
 }
-

@@ -43,7 +43,7 @@ mod test {
     #[test]
     fn mul() {
         let mut x: Real = 3.6;
-        let mut y: Real = 3.0;        
+        let mut y: Real = 3.0;
         let stack = cstack!();
         let vx = var!(stack, x);
         let vy = var!(stack, y);

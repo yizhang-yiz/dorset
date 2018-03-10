@@ -35,6 +35,6 @@ mod test {
         c.set_zero_all_adjoints();
         let d = sin(&b);
         d.grad();
-        assert!(b.adj().approx_eq_ulps(&X.cos(),2));
+        assert!(b.adj().approx_eq_ulps(&X.cos(), 2));
     }
 }

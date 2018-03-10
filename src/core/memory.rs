@@ -1,18 +1,18 @@
 //! Off-the-shelve memory arena using `typed-arena`
-//! crate. 
+//! crate.
 use typed_arena;
 pub use core::vari::*;
 pub use std::rc::Rc;
 
-pub struct ChainStack{
+pub struct ChainStack {
     pub arena: typed_arena::Arena<Vari>,
-    pub stack: Vec<Rc<*mut Vari>>
+    pub stack: Vec<Rc<*mut Vari>>,
 }
 impl ChainStack {
     pub fn new() -> ChainStack {
-        ChainStack{
+        ChainStack {
             arena: typed_arena::Arena::new(),
-            stack: vec![]
+            stack: vec![],
         }
     }
     pub fn alloc(&mut self, vi: Vari) -> Rc<*mut Vari> {

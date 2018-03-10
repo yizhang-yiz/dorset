@@ -43,7 +43,7 @@ pub fn pow<S, T: OpPow<S>>(a: T, b: S) -> <T as OpPow<S>>::Output {
 //     type Output = Real;
 //     fn pow(self, other: &'a Real) -> Real {
 //         self.clone().powf(other.clone())
-//     } 
+//     }
 // }
 
 binop!(impl OpPow, pow
@@ -60,7 +60,7 @@ mod test {
     #[test]
     fn add() {
         let x: Real = 3.6;
-        let y: Real = 3.0;        
+        let y: Real = 3.0;
         let stack = Rc::new(RefCell::new(ChainStack::new()));
         let vx = var!(stack, x);
         let vy = var!(stack, y);

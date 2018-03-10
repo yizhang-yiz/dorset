@@ -41,7 +41,7 @@ mod test {
     #[test]
     fn add() {
         let mut x: Real = 3.6;
-        let mut y: Real = 3.0;        
+        let mut y: Real = 3.0;
         let stack = Rc::new(RefCell::new(ChainStack::new()));
         let vx = var!(stack, x);
         let vy = var!(stack, y);
