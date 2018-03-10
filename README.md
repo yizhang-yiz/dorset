@@ -1,12 +1,12 @@
 
 # Table of Contents
 
-1.  [`dorset`, a rust implementation of `Stan Math` library.](#org71a8b15)
-    1.  [Example](#org88843d6)
-2.  [Lisense](#orgf1c4f73)
+1.  [`dorset`, a rust implementation of `Stan Math` library.](#org8042ff3)
+    1.  [Example](#org1523006)
+2.  [Lisense](#orgcf15d93)
 
 
-<a id="org71a8b15"></a>
+<a id="org8042ff3"></a>
 
 # `dorset`, a rust implementation of `Stan Math` library.
 
@@ -16,7 +16,7 @@ Rust features in automatic differentiation,
 hence meant to be experimental.
 
 
-<a id="org88843d6"></a>
+<a id="org1523006"></a>
 
 ## Example
 
@@ -43,7 +43,7 @@ Below is how to do the problem example in section 2.1 of
     }
 
 
-<a id="orgf1c4f73"></a>
+<a id="orgcf15d93"></a>
 
 # Lisense
 

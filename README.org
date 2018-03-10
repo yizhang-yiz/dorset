@@ -7,6 +7,7 @@
 ** Example
    Below is how to do the problem example in section 2.1 of
    [[https://arxiv.org/abs/1509.07164][the Stan Math paper]], using ~dorset~.
+
 #+BEGIN_SRC rust
 
   #[macro_use]
@@ -26,6 +27,7 @@
       println!("d.f/d.mu = {0:.6}", mu.adj());     // d.f/d.mu = 0.555556
       println!("d.f/d.sigma = {0:.6}", sigma.adj()); // d.f/d.sigma = -0.462963
   }
+
 #+END_SRC
 
 * Lisense
