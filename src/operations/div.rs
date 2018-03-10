@@ -10,7 +10,6 @@ fn chain_division(vi: &Vari) {
     match (vi.a.clone(), vi.b.clone()) {
         (Operand::Vari(ptr), Operand::Data(bd)) => {
             let avi: &mut Vari = ptr.clone().into();
-            let avi_val = avi.val();
             let avi_adj = avi.adj();
             avi.set_adj(avi_adj + adj / bd);
         }

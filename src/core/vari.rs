@@ -1,10 +1,9 @@
+use std::fmt;
 use core::types::*;
 use core::constants::*;
 use core::memory::*;
-use std::fmt::Debug;
 use std::rc::Rc;
 use std::cell::RefCell;
-use std::default::Default;
 use std::convert::From;
 
 #[derive(Clone)]
@@ -66,7 +65,13 @@ impl<'a> From<Rc<*mut Vari>> for &'a Vari {
     }
 }
 
-pub fn do_nothing(v: &Vari) {}
+impl fmt::Debug for Vari {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Var {{ val: {}, adj: {} }}", self.val(), self.adj())
+    }
+}
+
+pub fn do_nothing(_v: &Vari) {}
 
 #[derive(Debug, Clone)]
 pub struct VariData{

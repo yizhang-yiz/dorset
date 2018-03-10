@@ -1,8 +1,6 @@
 use std::fmt;
 use core::types::*;
 use core::vari::*;
-use core::memory::*;
-use std::convert::From;
 use std::rc::Rc;
 use operations;
 

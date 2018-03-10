@@ -3,7 +3,6 @@ use core::vari::*;
 use core::var::*;
 use std::cell::RefCell;
 use std::rc::Rc;
-use std::ops::Add;
 
 fn chain_pow(vi: &Vari) {
     let val = vi.val();
@@ -17,7 +16,6 @@ fn chain_pow(vi: &Vari) {
         }
         (Operand::Data(ad), Operand::Vari(ptr)) => {
             let bvi: &mut Vari = ptr.clone().into();
-            let bvi_val = bvi.val();
             let bvi_adj = bvi.adj();
             bvi.set_adj(bvi_adj + adj * val * ad.ln());
         }
@@ -64,12 +62,12 @@ mod test {
 
     #[test]
     fn add() {
-        let mut x: Real = 3.6;
-        let mut y: Real = 3.0;        
+        let x: Real = 3.6;
+        let y: Real = 3.0;        
         let stack = Rc::new(RefCell::new(ChainStack::new()));
         let vx = var!(stack, x);
         let vy = var!(stack, y);
-        let mut v = pow(&vx, &vy);
+        let v = pow(&vx, &vy);
         v.grad();
         assert_eq!(v.val(), x.clone().powf(y.clone()));
         assert_eq!(vx.adj(), y * x.powf(y - 1.0));

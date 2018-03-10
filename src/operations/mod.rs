@@ -1,4 +1,3 @@
-pub mod operand;
 pub mod grad;
 
 #[macro_use] pub mod ln;

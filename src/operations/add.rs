@@ -8,25 +8,21 @@ use std::ops::Add;
 fn chain_addition(vi: &Vari) {
     let adj = vi.adj();
     match (vi.a.clone(), vi.b.clone()) {
-        (Operand::Vari(ptr), Operand::Data(bd)) => {
+        (Operand::Vari(ptr), Operand::Data(_bd)) => {
             let avi: &mut Vari = ptr.clone().into();
-            let avi_val = avi.val();
             let avi_adj = avi.adj();
             avi.set_adj(avi_adj + adj);
         }
-        (Operand::Data(ad), Operand::Vari(ptr)) => {
+        (Operand::Data(_ad), Operand::Vari(ptr)) => {
             let bvi: &mut Vari = ptr.clone().into();
-            let bvi_val = bvi.val();
             let bvi_adj = bvi.adj();
             bvi.set_adj(bvi_adj + adj);
         }
         (Operand::Vari(ap), Operand::Vari(bp)) => {
             let avi: &mut Vari = ap.clone().into();
-            let avi_val = avi.val();
             let avi_adj = avi.adj();
             avi.set_adj(avi_adj + adj);
             let bvi: &mut Vari = bp.clone().into();
-            let bvi_val = bvi.val();
             let bvi_adj = bvi.adj();
             bvi.set_adj(bvi_adj + adj);
         }

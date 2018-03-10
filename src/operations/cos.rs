@@ -29,15 +29,15 @@ mod test {
         use std::cell::RefMut;
         use std::ops::Deref;
         let s = Rc::new(RefCell::new(ChainStack::new()));
-        const x: Real = 5.0;
+        const X: Real = 5.0;
         let a: Var = var!(s);
-        let b: Var = var!(s, x.clone());
+        let b: Var = var!(s, X.clone());
         let c = cos(&a);
         c.grad();
         assert!(a.adj().approx_eq_ulps(&ZERO, 2));
         c.set_zero_all_adjoints();
         let d = cos(&b);
         d.grad();
-        assert!(b.adj().approx_eq_ulps(&-x.sin(),2));
+        assert!(b.adj().approx_eq_ulps(&-X.sin(),2));
     }
 }

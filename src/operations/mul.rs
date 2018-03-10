@@ -10,13 +10,11 @@ fn chain_multiplication(vi: &Vari) {
     match (vi.a.clone(), vi.b.clone()) {
         (Operand::Vari(ptr), Operand::Data(bd)) => {
             let avi: &mut Vari = ptr.clone().into();
-            let avi_val = avi.val();
             let avi_adj = avi.adj();
             avi.set_adj(avi_adj + adj * bd);
         }
         (Operand::Data(ad), Operand::Vari(ptr)) => {
             let bvi: &mut Vari = ptr.clone().into();
-            let bvi_val = bvi.val();
             let bvi_adj = bvi.adj();
             bvi.set_adj(bvi_adj + adj * ad);
         }

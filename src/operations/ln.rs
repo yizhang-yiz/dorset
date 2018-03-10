@@ -28,7 +28,6 @@ mod test {
         use std::cell::RefMut;
         use std::ops::Deref;
         let s = Rc::new(RefCell::new(ChainStack::new()));
-        let a: Var = var!(s);
         let b: Var = var!(s, 3.0);
         let c = ln(&ln(&b));
         c.grad();
