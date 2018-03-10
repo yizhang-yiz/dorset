@@ -1,3 +1,5 @@
+//! Off-the-shelve memory arena using `typed-arena`
+//! crate. 
 use typed_arena;
 pub use core::vari::*;
 pub use std::rc::Rc;

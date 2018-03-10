@@ -1,3 +1,4 @@
+//! Operation `pow`.
 use super::*;
 
 fn chain_pow(vi: &Vari) {

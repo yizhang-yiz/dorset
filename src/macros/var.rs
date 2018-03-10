@@ -1,3 +1,4 @@
+/// Constructs a new `Var` from a real number, using memory arena;
 #[macro_export]
 macro_rules! var {
     ( $mem:expr ) => {

@@ -1,3 +1,4 @@
+//! Tranverse the expression graph and perform chain operations.
 use core::vari::*;
 use std::rc::Rc;
 

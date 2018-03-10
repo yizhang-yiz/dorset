@@ -1,3 +1,4 @@
+//! Operation `cos`
 use super::*;
 pub use std::rc::Rc;
 

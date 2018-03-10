@@ -1,6 +1,6 @@
-pub use core::*;
-pub use core::vari::*;
-pub use core::var::*;
+use core::*;
+use core::vari::*;
+use core::var::*;
 pub mod grad;
 use std::cell::RefCell;
 use std::rc::Rc;

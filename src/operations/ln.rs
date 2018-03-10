@@ -1,3 +1,4 @@
+//! Operation `ln`.
 use super::*;
 
 fn chain_ln(vi: &Vari) {

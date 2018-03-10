@@ -1,3 +1,4 @@
+//! Operation multiplication.
 use super::*;
 pub use std::ops::Mul;
 

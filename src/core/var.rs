@@ -1,4 +1,6 @@
-pub use std::fmt;
+//! Each `Var` contains a reference-counted pointer to a
+//! `Vari`, stored in memory arena. 
+use std::fmt;
 pub use core::types::*;
 pub use core::vari::*;
 pub use std::rc::Rc;

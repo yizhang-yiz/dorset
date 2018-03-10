@@ -1,3 +1,9 @@
+//! `Dorset`, a rust implementation of `Stan Math` library.
+//!  The project is not intended to be an exact port of `Math`,
+//!  but as a proof of concept to take advantage of some
+//!  Rust features in automatic differentiation.
+//!  Hence the crate is meant to be experimental.
+
 extern crate typed_arena;
 
 extern crate float_cmp;
@@ -8,12 +14,12 @@ pub mod macros;
 // pub mod macros;
 
 #[macro_use]
-mod core;
+pub mod core;
 pub use core::*;
 
 #[allow(unused_imports)]
 #[macro_use]
-mod operations;
+pub mod operations;
 pub use operations::*;
 
 pub use std::rc::Rc;

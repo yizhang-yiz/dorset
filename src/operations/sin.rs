@@ -1,3 +1,4 @@
+//! Operation `sin`.
 use super::*;
 
 fn chain_sin(vi: &Vari) {

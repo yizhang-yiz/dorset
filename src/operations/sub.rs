@@ -1,3 +1,4 @@
+//! Operation subtraction.
 use super::*;
 pub use std::ops::Sub;
 

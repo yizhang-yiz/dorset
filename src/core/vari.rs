@@ -1,3 +1,6 @@
+//! As the backend of `Var`, `Vari` constains actual node
+//! data, as well as the memory arena information. Each node
+//! data includes a funtion pointer for chain operation.
 pub use std::fmt;
 pub use core::types::*;
 pub use core::constants::*;

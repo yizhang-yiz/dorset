@@ -1,3 +1,4 @@
+/// Initialize a new memory arena;
 #[macro_export]
 macro_rules! cstack {
     () => {
