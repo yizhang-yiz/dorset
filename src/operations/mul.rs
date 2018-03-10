@@ -1,9 +1,5 @@
-use core::types::*;
-use core::vari::*;
-use core::var::*;
-use std::cell::RefCell;
-use std::rc::Rc;
-use std::ops::Mul;
+use super::*;
+pub use std::ops::Mul;
 
 fn chain_multiplication(vi: &Vari) {
     let adj = vi.adj();
@@ -47,7 +43,7 @@ mod test {
     fn mul() {
         let mut x: Real = 3.6;
         let mut y: Real = 3.0;        
-        let stack = Rc::new(RefCell::new(ChainStack::new()));
+        let stack = cstack!();
         let vx = var!(stack, x);
         let vy = var!(stack, y);
         let mut v = &vx * &vy;

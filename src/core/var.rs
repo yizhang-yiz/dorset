@@ -1,7 +1,7 @@
-use std::fmt;
-use core::types::*;
-use core::vari::*;
-use std::rc::Rc;
+pub use std::fmt;
+pub use core::types::*;
+pub use core::vari::*;
+pub use std::rc::Rc;
 use operations;
 
 pub struct Var {

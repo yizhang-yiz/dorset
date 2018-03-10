@@ -1,8 +1,4 @@
-use core::types::*;
-use core::vari::*;
-use core::var::*;
-use std::cell::RefCell;
-use std::rc::Rc;
+use super::*;
 
 fn chain_pow(vi: &Vari) {
     let val = vi.val();
@@ -50,8 +46,8 @@ pub fn pow<S, T: OpPow<S>>(a: T, b: S) -> <T as OpPow<S>>::Output {
 // }
 
 binop!(impl OpPow, pow
-       for Var, Real, |x: Real, y: &Real| x.powf(y.clone()),
-       for Real, Var, |x: &Real, y: Real| x.powf(y),
+       for Var, Real, |x: Real, y: Real| x.powf(y),
+       for Real, Var, |x: Real, y: Real| x.powf(y),
        for Var, Var, |x: Real, y: Real| x.powf(y),
        chain Fn = chain_pow);
 

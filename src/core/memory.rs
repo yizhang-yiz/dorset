@@ -1,6 +1,6 @@
 use typed_arena;
-use core::vari::*;
-use std::rc::Rc;
+pub use core::vari::*;
+pub use std::rc::Rc;
 
 pub struct ChainStack{
     pub arena: typed_arena::Arena<Vari>,

@@ -1,8 +1,4 @@
-use core::types::*;
-use core::vari::*;
-use core::var::*;
-use std::cell::RefCell;
-use std::rc::Rc;
+use super::*;
 
 fn chain_ln(vi: &Vari) {
     let adj = vi.adj();
@@ -27,7 +23,7 @@ mod test {
         use std::mem::size_of;
         use std::cell::RefMut;
         use std::ops::Deref;
-        let s = Rc::new(RefCell::new(ChainStack::new()));
+        let s = cstack!();
         let b: Var = var!(s, 3.0);
         let c = ln(&ln(&b));
         c.grad();

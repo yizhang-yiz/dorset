@@ -1,8 +1,5 @@
-use core::types::*;
-use core::vari::*;
-use core::var::*;
-use std::cell::RefCell;
-use std::rc::Rc;
+use super::*;
+pub use std::rc::Rc;
 
 fn chain_cos(vi: &Vari) {
     let adj = vi.adj();

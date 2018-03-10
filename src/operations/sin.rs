@@ -1,8 +1,4 @@
-use core::types::*;
-use core::vari::*;
-use core::var::*;
-use std::cell::RefCell;
-use std::rc::Rc;
+use super::*;
 
 fn chain_sin(vi: &Vari) {
     let adj = vi.adj();

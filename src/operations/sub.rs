@@ -1,9 +1,5 @@
-use core::types::*;
-use core::vari::*;
-use core::var::*;
-use std::cell::RefCell;
-use std::rc::Rc;
-use std::ops::Sub;
+use super::*;
+pub use std::ops::Sub;
 
 fn chain_subtraction(vi: &Vari) {
     let adj = vi.adj();
