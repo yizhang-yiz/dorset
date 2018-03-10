@@ -1,4 +1,5 @@
 
+![doc](https://docs.rs/dorset/badge.svg)
 # Table of Contents
 
 1.  [`dorset`, a rust implementation of `Stan Math` library.](#org8042ff3)
