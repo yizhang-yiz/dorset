@@ -4,7 +4,7 @@ version = "0.1.0"
 authors = ["Yi Zhang <yizhang.cae@gmail.com>"]
 description = "A rust implementation of Stan Math automatic differentiation library."
 license = "BSD-3-Clause"
-repository = "git@bitbucket.org:yizhang-cae/dorset.git"
+repository = "https://github.com/yizhang-cae/dorset.git"
 
 [dependencies]
 # nalgebra = "0.14"
