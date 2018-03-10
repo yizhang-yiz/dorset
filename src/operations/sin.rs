@@ -4,70 +4,40 @@ use core::var::*;
 use std::cell::RefCell;
 use std::rc::Rc;
 
-var_uniop!(impl Vari for SinVari,
-           sin for Var,
-           with val = sin,
-           derivative = |adj, _vi_adj, vi_val: Real| adj * vi_val.cos());
-
-pub fn sin(v: &Var) -> Var{
-    v.sin()
+fn chain_sin(vi: &Vari) {
+    let adj = vi.adj();
+    if let Operand::Vari(ref a) = vi.a {
+        let avi: &mut Vari = a.clone().into();
+        let avi_val = avi.val();
+        let avi_adj = avi.adj();
+        avi.set_adj(avi_adj + adj * avi_val.cos());
+    }
 }
 
+uniop!{ impl OpSin, sin for Var, sin for Real, chain Fn = chain_sin }
+
 #[cfg(test)]
-mod log_test {
+mod test {
     use super::*;
+    use core::constants::*;
     use core::memory::*;
+    use float_cmp::*;
 
     #[test]
-    fn sin_v() {
-        let x: Real = 3.0;
-        let dsinx: Real = x.cos();
-        let stack = Rc::new(RefCell::new(VarStack::new()));
-        let v = Var::from((3.0, stack.clone()));
-        let res = v.sin();
-        res.grad();
-        assert_eq!(v.adj(), dsinx);
-    }
-
-    #[test]
-    fn sin_add_d() {
-        use core::constants::*;
-        let x: Real = 3.0;
-        let y: Real = 7.0;
-        let stack = Rc::new(RefCell::new(VarStack::new()));
-        let v1 = Var::from((x, stack.clone()));
-        let res = sin(&v1) + y;
-        assert_eq!(v1.adj(), ZERO);
-        res.grad();
-        assert_eq!(v1.adj(), x.cos());
-    }
-
-    #[test]
-    fn d_add_sin() {
-        use core::constants::*;
-        let x: Real = 3.0;
-        let y: Real = 7.0;
-        let stack = Rc::new(RefCell::new(VarStack::new()));
-        let v1 = Var::from((x, stack.clone()));
-        let res = y + sin(&v1);
-        assert_eq!(v1.adj(), ZERO);
-        res.grad();
-        assert_eq!(v1.adj(), x.cos());
-    }
-
-    #[test]
-    fn sin_add_sin() {
-        use core::constants::*;
-        let x: Real = 3.0;
-        let y: Real = 7.0;
-        let stack = Rc::new(RefCell::new(VarStack::new()));
-        let v1 = Var::from((x, stack.clone()));
-        let v2 = Var::from((y, stack.clone()));
-        let res = sin(&v1) + sin(&v2);
-        assert_eq!(v1.adj(), ZERO);
-        assert_eq!(v2.adj(), ZERO);
-        res.grad();
-        assert_eq!(v1.adj(), x.cos());
-        assert_eq!(v2.adj(), y.cos());
+    fn test() {
+        use std::mem::size_of;
+        use std::cell::RefMut;
+        use std::ops::Deref;
+        let s = Rc::new(RefCell::new(ChainStack::new()));
+        const x: Real = 3.0;
+        let a: Var = var!(s);
+        let b: Var = var!(s, x.clone());
+        let c = sin(&a);
+        c.grad();
+        assert!(a.adj().approx_eq_ulps(&ONE, 2));
+        c.set_zero_all_adjoints();
+        let d = sin(&b);
+        d.grad();
+        assert!(b.adj().approx_eq_ulps(&x.cos(),2));
     }
 }

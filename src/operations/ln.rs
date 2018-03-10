@@ -14,35 +14,7 @@ fn chain_ln(vi: &Vari) {
     }
 }
 
-pub trait OpLn {
-    fn ln(&self) -> Self;
-}
-
-impl OpLn for Real {
-    fn ln(&self) -> Real {
-        self.clone().ln()
-    }
-}
-
-impl OpLn for Var {
-    fn ln(&self) -> Var {
-        let vi = self.get_vari_refmut();
-        let mem = vi.mem();
-        let operand = Operand::Vari(self.vi_.clone());
-        let new_vi_ptr = mem.borrow_mut().alloc(Vari::new(
-            self.val().ln(),
-            operand,
-            Operand::None,
-            Box::new(chain_ln),
-            mem.clone()
-        ));
-        Var::new(new_vi_ptr)
-    }
-}
-
-pub fn ln<T: OpLn>(v: &T) -> T {
-    OpLn::ln(v)
-}
+uniop!{ impl OpLn, ln for Var, ln for Real, chain Fn = chain_ln }
 
 #[cfg(test)]
 mod test {
